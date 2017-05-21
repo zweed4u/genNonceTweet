@@ -1,11 +1,13 @@
 #!/usr/bin/python
+# Tested with tsschecker v232
 # See here for implementation https://twitter.com/iPhone6_1
 # only for latest public version - support manual specification feature later as signing window needs to be open anyways
 # symlinks in /usr/bin pointing to /usr/local/bin binaries - add support for symlinking if needed and chmoding - will requre interactive for sudo pass
 ## sudo ln -s /usr/local/bin/tsschecker /usr/bin/tsschecker && sudo chmod +x /usr/bin/tsschecker
 ## sudo ln -s /usr/local/bin/img4tool /usr/bin/img4tool && sudo chmod +x /usr/bin/img4tool
 
-import os, sys, time, paramiko, tweepy, datetime, ConfigParser
+import os, sys, time, paramiko, random, tweepy, datetime, ConfigParser
+from colorCodes import *
 
 rootDirectory = os.getcwd()
 c = ConfigParser.ConfigParser()
@@ -64,16 +66,32 @@ def UTCtoEST():
 if __name__ == '__main__': #exception handling needed
 	print UTCtoEST(),'::','Loading configuration...'
 	user_config = Config() #config instance
-	#my_twitter = Twitter(user_config.consumerKey, user_config.consumerSecret, user_config.accessToken, user_config.accessTokenSecret) #twitter auth instance
+	my_twitter = Twitter(user_config.consumerKey, user_config.consumerSecret, user_config.accessToken, user_config.accessTokenSecret) #twitter auth instance
 	print UTCtoEST(),'::','Logging into twitter...'
-	#my_twitter.authenticate() #log into twitter
-	#my_twitter.tweet("Hello World") #example tweet
+	my_twitter.authenticate() #log into twitter
 	print UTCtoEST(),'::','Connecting to localhost...'
 	local_ssh = SSH('127.0.0.1', 22, os.getlogin(), user_config.selfPasswordSSH) #ssh instance
 	local_ssh.connect() #local connect
 	while 1:
-		print UTCtoEST(),'::','Executing tsschecker...'
+		print
+		print UTCtoEST(),'::',RED+'Removing any existing blobs in '+rootDirectory+'...'+COLOR_END
+		local_ssh.execute("cd "+rootDirectory+'; rm *.shsh2')[1].read()
+		#assert ls of shsh2s returns empty
+		print UTCtoEST(),'::','Executing tsschecker, one moment please...'
 		tsscheck_command = "tsschecker -d "+user_config.deviceIdentifier+" -l --boardconfig "+user_config.deviceBoardConfig+" -e "+user_config.deviceECID+" -s ."
-		tsscheck_command = "tsschecker"
-		print local_ssh.execute("cd "+rootDirectory+'; '+tsscheck_command)[1].read() #need to call cd with other command - not persistent - tuple (stdin, stdout, stderr)
-		time.sleep(300) #5min
+		tsschecker_output = local_ssh.execute("cd "+rootDirectory+'; '+tsscheck_command)[1].read()
+		assert 'Saved shsh blobs!' in tsschecker_output and 'success' in tsschecker_output and 'IS signed' in tsschecker_output, "Assertion Error: Blob not saved || Not signed"
+		version = tsschecker_output.split("iOS ")[1].split('\n')[0]
+		#assert ls of shsh2s returns entry		
+		print UTCtoEST(),':: Execution finished! Parsing for generator!'
+		#parsing
+		full_blob = local_ssh.execute("cd "+rootDirectory+'; cat *.shsh2')[1].read()
+		generator = full_blob.split("<key>generator</key>")[1].split("<string>")[1].split("</string>")[0]
+		img4tool_command = "img4tool -s *.shsh2" #assuming removal of blob works before each pass - only one blob, no need for file name
+		img4tool_output = local_ssh.execute("cd "+rootDirectory+'; '+img4tool_command)[1].read()
+		nonce = img4tool_output.split("BNCH: ")[2].split('\n')[0]
+		colorText = random.choice(colorCodes.values())
+		print UTCtoEST(),'::',colorText+'Tweeting ['+version+'] :: '+generator+' -> '+nonce,COLOR_END
+		my_twitter.tweet(UTCtoEST()+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
+		print UTCtoEST(),":: Tweet posted! Sleeping..."
+		time.sleep(180) #3min

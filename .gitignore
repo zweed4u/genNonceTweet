@@ -7,3 +7,8 @@ config.cfg
 # blobs
 *.shsh2
 *.shsh
+
+# pyc files
+*.pyc
+
+.DS_Store
