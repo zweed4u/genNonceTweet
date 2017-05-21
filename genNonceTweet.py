@@ -94,4 +94,8 @@ if __name__ == '__main__': #exception handling needed
 		print UTCtoEST(),'::',colorText+'Tweeting ['+version+'] :: '+generator+' -> '+nonce,COLOR_END
 		my_twitter.tweet(UTCtoEST()+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
 		print UTCtoEST(),":: Tweet posted! Sleeping..."
-		time.sleep(180) #3min
+		for i in range(180):
+			sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(180-i)+' seconds before next generation...')
+			sys.stdout.flush()
+			time.sleep(1)
+		
