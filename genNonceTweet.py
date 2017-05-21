@@ -1,6 +1,11 @@
 #!/usr/bin/python
 # See here for implementation https://twitter.com/iPhone6_1
-import os, sys, paramiko, tweepy, datetime, ConfigParser
+# only for latest public version - support manual specification feature later as signing window needs to be open anyways
+# symlinks in /usr/bin pointing to /usr/local/bin binaries - add support for symlinking if needed and chmoding - will requre interactive for sudo pass
+## sudo ln -s /usr/local/bin/tsschecker /usr/bin/tsschecker && sudo chmod +x /usr/bin/tsschecker
+## sudo ln -s /usr/local/bin/img4tool /usr/bin/img4tool && sudo chmod +x /usr/bin/img4tool
+
+import os, sys, time, paramiko, tweepy, datetime, ConfigParser
 
 rootDirectory = os.getcwd()
 c = ConfigParser.ConfigParser()
@@ -53,14 +58,22 @@ class Twitter:
 		api.update_status(status=message)
 
 def UTCtoEST():
-    current = datetime.now()
+    current = datetime.datetime.now()
     return str(current) + ' EST'
 
-if __name__ == '__main__':
+if __name__ == '__main__': #exception handling needed
+	print UTCtoEST(),'::','Loading configuration...'
 	user_config = Config() #config instance
 	#my_twitter = Twitter(user_config.consumerKey, user_config.consumerSecret, user_config.accessToken, user_config.accessTokenSecret) #twitter auth instance
+	print UTCtoEST(),'::','Logging into twitter...'
 	#my_twitter.authenticate() #log into twitter
 	#my_twitter.tweet("Hello World") #example tweet
+	print UTCtoEST(),'::','Connecting to localhost...'
 	local_ssh = SSH('127.0.0.1', 22, os.getlogin(), user_config.selfPasswordSSH) #ssh instance
 	local_ssh.connect() #local connect
-	print local_ssh.execute("cd "+rootDirectory+'; pwd')[1].read() #need to call cd with other command - not persistent - tuple (stdin, stdout, stderr)
+	while 1:
+		print UTCtoEST(),'::','Executing tsschecker...'
+		tsscheck_command = "tsschecker -d "+user_config.deviceIdentifier+" -l --boardconfig "+user_config.deviceBoardConfig+" -e "+user_config.deviceECID+" -s ."
+		tsscheck_command = "tsschecker"
+		print local_ssh.execute("cd "+rootDirectory+'; '+tsscheck_command)[1].read() #need to call cd with other command - not persistent - tuple (stdin, stdout, stderr)
+		time.sleep(300) #5min
