@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # See here for implementation https://twitter.com/iPhone6_1
-import os, paramiko, tweepy, datetime, ConfigParser
+import os, sys, paramiko, tweepy, datetime, ConfigParser
 
 rootDirectory = os.getcwd()
 c = ConfigParser.ConfigParser()
@@ -30,7 +30,10 @@ class SSH:
 		self.passwd = passwd
 
 	def connect(self):
-		SSH.ssh.connect(self.address, self.port, self.user, self.passwd)
+		self.ssh.connect(self.address, self.port, self.user, self.passwd)
+
+	def execute(self, command):
+		return self.ssh.exec_command(command)
 
 class Twitter:
 	'''Twitter integration'''
@@ -55,9 +58,9 @@ def UTCtoEST():
 
 if __name__ == '__main__':
 	user_config = Config() #config instance
-
 	my_twitter = Twitter(user_config.consumerKey, user_config.consumerSecret, user_config.accessToken, user_config.accessTokenSecret) #twitter auth instance
 	my_twitter.authenticate() #log into twitter
 	#my_twitter.tweet("Hello World") #example tweet
 	local_ssh = SSH('127.0.0.1', 22, os.getlogin(), user_config.selfPasswordSSH) #ssh instance
 	local_ssh.connect() #local connect
+	#print local_ssh.execute("pwd")[1].read() #stdin, [stdout], stderr #example print out of command

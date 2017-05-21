@@ -6,7 +6,7 @@ ecid = #hex XXXXXXXXXXXX
 boardConfig = #n51ap
 
 [ssh]
-localPassword = password #ssh loopback password for login to 127.0.0.1
+localPassword = password123 #ssh loopback password for login to 127.0.0.1
 
 [shsh2_path]
 pathToBlobs = /home/JohnDoe/Desktop/genNonceTweet/ #Full path to shsh2 files (this folder)
@@ -14,7 +14,7 @@ pathToBlobs = /home/JohnDoe/Desktop/genNonceTweet/ #Full path to shsh2 files (th
 [tools]
 binNeeded = False #Used to determine if tsschecker and img4tool bins are needed - http://api.tihmstar.net/builds/tsschecker/tsschecker-latest.zip - installation for img4tool needed
 
-[twitter]
+[twitter] #https://apps.twitter.com/app
 consumerKey = xXx
 consumerSecret = xXx
 accessToken = xXx-xXx
