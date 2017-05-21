@@ -58,9 +58,9 @@ def UTCtoEST():
 
 if __name__ == '__main__':
 	user_config = Config() #config instance
-	my_twitter = Twitter(user_config.consumerKey, user_config.consumerSecret, user_config.accessToken, user_config.accessTokenSecret) #twitter auth instance
-	my_twitter.authenticate() #log into twitter
+	#my_twitter = Twitter(user_config.consumerKey, user_config.consumerSecret, user_config.accessToken, user_config.accessTokenSecret) #twitter auth instance
+	#my_twitter.authenticate() #log into twitter
 	#my_twitter.tweet("Hello World") #example tweet
 	local_ssh = SSH('127.0.0.1', 22, os.getlogin(), user_config.selfPasswordSSH) #ssh instance
 	local_ssh.connect() #local connect
-	#print local_ssh.execute("pwd")[1].read() #stdin, [stdout], stderr #example print out of command
+	print local_ssh.execute("cd "+rootDirectory+'; pwd')[1].read() #need to call cd with other command - not persistent - tuple (stdin, stdout, stderr)
