@@ -98,4 +98,5 @@ if __name__ == '__main__': #exception handling needed
 			sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(180-i)+' seconds before next generation...')
 			sys.stdout.flush()
 			time.sleep(1)
+		print
 		

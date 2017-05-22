@@ -5,7 +5,6 @@ colorCodes = {
     'cyan':'\033[36m',
     'lightgrey':'\033[37m',
     'darkgrey':'\033[90m',
-    'lightred':'\033[91m',
     'yellow':'\033[93m',
     'lightblue':'\033[94m',
     'pink':'\033[95m',
