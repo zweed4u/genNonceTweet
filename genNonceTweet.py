@@ -76,9 +76,8 @@ if __name__ == '__main__': #exception handling needed
 	local_ssh.connect() #local connect
 	while 1:
 		print
-		print UTCtoEST(),'::',RED+'Removing any existing blobs in '+rootDirectory+'...'+COLOR_END
-		local_ssh.execute("cd "+rootDirectory+'; rm *.shsh2')[1].read()
-		#assert ls of shsh2s returns empty
+		print UTCtoEST(),'::',RED+'Moving any existing blobs in '+rootDirectory+' to Blobs folder...'+COLOR_END
+		local_ssh.execute("cd "+rootDirectory+'; mv *.shsh2 Blobs/')
 		print UTCtoEST(),'::','Executing tsschecker, one moment please...'
 		tsscheck_command = "tsschecker -d "+user_config.deviceIdentifier+" -l --boardconfig "+user_config.deviceBoardConfig+" -e "+user_config.deviceECID+" -s ."
 		tsschecker_output = local_ssh.execute("cd "+rootDirectory+'; '+tsscheck_command)[1].read()
@@ -96,8 +95,8 @@ if __name__ == '__main__': #exception handling needed
 		print UTCtoEST(),'::',colorText+'Tweeting ['+version+'] :: '+generator+' -> '+nonce,COLOR_END
 		my_twitter.tweet(UTCtoEST()+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
 		print UTCtoEST(),":: Tweet posted! Sleeping..."
-		for i in range(180):
-			sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(180-i)+' seconds before next generation...')
+		for i in range(300):
+			sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(300-i)+' seconds before next generation...')
 			sys.stdout.flush()
 			time.sleep(1)
 		print
