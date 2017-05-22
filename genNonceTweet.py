@@ -1,10 +1,12 @@
 #!/usr/bin/python
-# Tested with tsschecker v232
+# Tested with tsschecker v232, img4tool v92
+
 # See here for implementation https://twitter.com/iPhone6_1
 # only for latest public version - support manual specification feature later as signing window needs to be open anyways
 # symlinks in /usr/bin pointing to /usr/local/bin binaries - add support for symlinking if needed and chmoding - will requre interactive for sudo pass
 ## sudo ln -s /usr/local/bin/tsschecker /usr/bin/tsschecker && sudo chmod +x /usr/bin/tsschecker
 ## sudo ln -s /usr/local/bin/img4tool /usr/bin/img4tool && sudo chmod +x /usr/bin/img4tool
+# add threading to monitor dms - for admin user sleep timer adjustment
 
 import os, sys, time, paramiko, random, tweepy, datetime, ConfigParser
 from colorCodes import *
