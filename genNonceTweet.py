@@ -92,8 +92,8 @@ if __name__ == '__main__': #exception handling needed
 		img4tool_output = local_ssh.execute("cd "+rootDirectory+'; '+img4tool_command)[1].read()
 		nonce = img4tool_output.split("BNCH: ")[2].split('\n')[0]
 		colorText = random.choice(colorCodes.values())
-		print UTCtoEST(),'::',colorText+'Tweeting ['+version+'] :: '+generator+' -> '+nonce,COLOR_END
-		my_twitter.tweet(UTCtoEST()+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
+		print UTCtoEST(),'::',colorText+'Tweeting '+user_config.deviceIdentifier+' :: ['+version+'] :: '+generator+' -> '+nonce,COLOR_END
+		my_twitter.tweet(UTCtoEST()+' :: '+user_config.deviceIdentifier+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
 		print UTCtoEST(),":: Tweet posted! Sleeping..."
 		for i in range(300):
 			sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(300-i)+' seconds before next generation...')
