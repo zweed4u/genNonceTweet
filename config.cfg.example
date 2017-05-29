@@ -1,4 +1,6 @@
 # Modify this file and save it as config.cfg
+[operation]
+sleep = 300 #seconds to sleep between tss requests
 
 [device]
 deviceIdentifier = #eg. iPhone6,1

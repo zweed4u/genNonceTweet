@@ -27,6 +27,7 @@ class Config:
     consumerSecret = c.get('twitter','consumerSecret')
     accessToken = c.get('twitter','accessToken')
     accessTokenSecret = c.get('twitter','accessTokenSecret')
+    tssRequestSleep = int(c.get('operation','sleep'))
 
 class SSH:
 	ssh = paramiko.SSHClient()
@@ -93,10 +94,12 @@ if __name__ == '__main__': #exception handling needed
 		nonce = img4tool_output.split("BNCH: ")[2].split('\n')[0]
 		colorText = random.choice(colorCodes.values())
 		print UTCtoEST(),'::',colorText+'Tweeting '+user_config.deviceIdentifier+' :: ['+version+'] :: '+generator+' -> '+nonce,COLOR_END
-		my_twitter.tweet(UTCtoEST()+' :: '+user_config.deviceIdentifier+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
+		#my_twitter.tweet(UTCtoEST()+' :: '+user_config.deviceIdentifier+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
+		my_twitter.tweet(user_config.deviceIdentifier+' :: ['+version+'] ::\n'+generator+' -> '+nonce)
+
 		print UTCtoEST(),":: Tweet posted! Sleeping..."
-		for i in range(300):
-			sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(300-i)+' seconds before next generation...')
+		for i in range(user_config.tssRequestSleep):
+			sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(user_config.tssRequestSleep-i)+' seconds before next generation...')
 			sys.stdout.flush()
 			time.sleep(1)
 		print
